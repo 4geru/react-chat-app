@@ -18,7 +18,7 @@ function App() {
       ]
     }
   });
-  const [selectedRoom, setSelectedRoom] = useState([DEFAULT_ROOMS]);
+  const [selectedRoom, setSelectedRoom] = useState(DEFAULT_ROOMS);
   const [chats, setChat] = useState(rooms[selectedRoom].chats);
 
   const addMessage = (message) => {
@@ -29,19 +29,28 @@ function App() {
     setChat([...chats, chat])
   }
 
+  const roomNames = Object.keys(rooms)
+
   const addRoom = (roomName) => {
     setSelectedRoom(roomName)
     // ルームがなければ、追加する
-    if(!Object.keys(rooms).includes(roomName)) {
+    if(!roomNames.includes(roomName)) {
       setRoom({...rooms, [roomName]: {chats: []}})
     }
+    switchRoom(roomName)
+  }
+
+  const switchRoom = (roomName) => {
+    setSelectedRoom(roomName)
     setChat(rooms[roomName] ? rooms[roomName].chats : [])
   }
 
   return (
     <Container className="App">
-      <SelectedRoomContext.Provider value={[selectedRoom, addRoom]}>
-        <Header />
+      <SelectedRoomContext.Provider value={[selectedRoom, roomNames, {addRoom: addRoom, switchRoom: switchRoom}]}>
+        <Header
+          selectedRoom={selectedRoom}
+        />
         <Board
           chats={chats}
           addMessage={(message) => { addMessage(message) }}

@@ -8,7 +8,6 @@ const Container = styled.div`
     border-radius: 10px;
     padding: 24px 36px;
     background-color: white;
-    height: 100px;
     border: '2px solid white'
 
     &:focus-ring { outline: none; }
