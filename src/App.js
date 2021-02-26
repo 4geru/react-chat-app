@@ -9,16 +9,23 @@ const Container = styled.div`
 `
 
 function App() {
-  const [messages, setMessage] = useState(['Hello', 'World']);
+  const [chats, setChat] = useState([
+    { user: 'tom', message: 'Hello' },
+    { user: 'bob', message: 'World' }
+  ]);
 
   const addMessage = (message) => {
-    setMessage([...messages, message])
+    const chat = {
+      user: 'me',
+      message: message
+    }
+    setChat([...chats, chat])
   }
   return (
     <Container className="App">
       <Header />
       <Board
-        messages={messages}
+        chats={chats}
         addMessage={(message) => { addMessage(message) }}
       />
     </Container>
