@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { MessageForm } from './MessageForm'
 
 const Container = styled.div`
-    height: 95%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
