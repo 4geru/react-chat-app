@@ -27,6 +27,7 @@ const ControlButton = styled.button`
     height:37px;
     background:gold;
     border-radius:100%;
+    font-size: 25px;
 `
 
 const MessageFormInput = styled(Input)`
