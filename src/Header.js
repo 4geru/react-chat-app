@@ -7,30 +7,24 @@ const Container = styled.header`
   padding: 24p 64px 0;
   border-bottom: 1px solid #E0E0E0;
 `
-
-const HeaderUl = styled.ul`
-  display: flex;
-  margin: 0;
-  padding: 0;
-`
-
-const HeaderLi = styled.li`
+const Title = styled.div`
   list-style: none;
   padding: 4px 12px;
-  cursor: pointer;
-  border-bottom: ${({focused}) => focused ? '2px solid #F44336' : ''};
+  cursor: pointer;white-space: nowrap;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   ::before {
-    content: "${({focused}) => focused ? '🍣' : '🍺' }";
+    content: "🍣";
+    margin-right: 12px;
   } 
 `
 
-export const Header = () => {
+export const Header = ({selectedRoom}) => {
     return (
         <Container>
-            <HeaderUl>
-                <HeaderLi>Chat app</HeaderLi>
-            </HeaderUl>
+            <Title>{selectedRoom}</Title>
         </Container>
     )
 }

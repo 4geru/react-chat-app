@@ -1,45 +1,72 @@
 import styled from 'styled-components';
-import { useState } from 'react'
+import { useState } from 'react';
+import { ControlModal } from './ControlModal';
+import { Input } from './components/input'
+import { Button } from './components/button'
 
-const Container = styled.form`
+const Container = styled.div`
+    display:flex;
+    justify-content: space-around;
     height: 100%;
 `
 
-const Input = styled.input`
-    border-radius: 3px;
-    padding: 8px 8px;
-    margin: 4px 8px;
-    border: 1px solid black;
+const MessageFormContainer = styled.form`
+    height: 100%;
+    flex: 5;
 `
 
-const Button = styled.button`
+const ControlContainer = styled.div`
+    flex: 1;
+`
+
+const ControlButton = styled.button`
     border: none;
-    border-radius: 3px;
     background-color: #2196F3;
-    padding: 8px 16px;
-    margin: 4px 8px;
-    min-width: 100px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
+    margin: 4px 25px 4px 4px;
+    width:37px;
+    height:37px;
+    background:gold;
+    border-radius:100%;
+`
+
+const MessageFormInput = styled(Input)`
+    width: 50%;
 `
 
 export const MessageForm = ({addMessage}) => {
     const [text, setText] = useState('')
+    const [showModal, setShowModal] = useState(false)
     const submitForm = (event) => {
         event.preventDefault()
         addMessage(text)
         setText('')
     }
 
+    const openModal = (event) => {
+        event.preventDefault();
+        setShowModal(true)
+    }
 
-    return <Container onSubmit={submitForm}>
-        <Input
-            type='text'
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-        />
-        <Button>送信</Button>
-    </Container>
+    return (
+        <Container>
+            <MessageFormContainer onSubmit={submitForm}>
+                <MessageFormInput
+                    type='text'
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                />
+                <Button>送信</Button>
+            </MessageFormContainer>
+            <ControlContainer>
+                <ControlButton onClick={(e) => { openModal(e) }}>🍣</ControlButton>
+            </ControlContainer>
+            {
+                showModal ?
+                    <ControlModal
+                        closeModal={() => setShowModal(false)}
+                    /> :
+                    ''
+            }
+        </Container>
+    )
 }
