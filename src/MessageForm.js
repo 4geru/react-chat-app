@@ -27,6 +27,7 @@ const ControlButton = styled.button`
     height:37px;
     background:gold;
     border-radius:100%;
+    font-size: 25px;
 `
 
 const MessageFormInput = styled(Input)`
@@ -58,7 +59,7 @@ export const MessageForm = ({addMessage}) => {
                 <Button>送信</Button>
             </MessageFormContainer>
             <ControlContainer>
-                <ControlButton onClick={(e) => { openModal(e) }}>🍣</ControlButton>
+                <ControlButton onClick={(e) => { openModal(e) }}>🐵</ControlButton>
             </ControlContainer>
             {
                 showModal ?

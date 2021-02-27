@@ -14,9 +14,11 @@ const Title = styled.div`
   max-width: 300px;
   text-overflow: ellipsis;
   overflow: hidden;
+  font-size: 20px;
 
   ::before {
-    content: "🍣";
+    content: "🐵";
+    font-size: 25px;
     margin-right: 12px;
   } 
 `
@@ -24,7 +26,9 @@ const Title = styled.div`
 export const Header = ({selectedRoom}) => {
     return (
         <Container>
-            <Title>{selectedRoom}</Title>
+            <Title>
+              {selectedRoom}
+            </Title>
         </Container>
     )
 }
