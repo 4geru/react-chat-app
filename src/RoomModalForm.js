@@ -43,7 +43,7 @@ export const RoomModalForm = ({closeModal}) => {
                         <Li
                             key={index}
                             selected={roomName === selectedRoom}
-                            onClick={ () => { switchRoom(roomName); closeModal() }}
+                            onClick={() => { switchRoom(roomName); closeModal() }}
                         >
                             {roomName}
                         </Li>

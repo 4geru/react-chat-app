@@ -26,7 +26,9 @@ function App() {
       user: 'me',
       message: message
     }
-    setChat([...chats, chat])
+    const nextChats = [...chats, chat]
+    setChat(nextChats)
+    setRoom({...rooms, [selectedRoom]: { chats: nextChats }})
   }
 
   const roomNames = Object.keys(rooms)
