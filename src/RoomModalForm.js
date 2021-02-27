@@ -20,7 +20,8 @@ const Li = styled.li`
     word-break: break-word;
     border-bottom: ${({selected}) => selected ? '2px solid #F44336' : ''};
     ::before {
-        content: "${({selected}) => selected ? '🍣' : '🍺' }";
+        content: "${({selected}) => selected ? '🐵' : '🙈' }";
+        font-size: 20px;
         margin-right: 12px;
     }
 `

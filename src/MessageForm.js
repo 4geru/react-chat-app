@@ -58,7 +58,7 @@ export const MessageForm = ({addMessage}) => {
                 <Button>送信</Button>
             </MessageFormContainer>
             <ControlContainer>
-                <ControlButton onClick={(e) => { openModal(e) }}>🍣</ControlButton>
+                <ControlButton onClick={(e) => { openModal(e) }}>🐵</ControlButton>
             </ControlContainer>
             {
                 showModal ?
