@@ -2,11 +2,30 @@ import './App.css';
 import { SelectedRoomContext, DEFAULT_ROOMS } from "./context/SelectedRoomContext"
 import { Header } from './Header'
 import { Board } from './Board'
+import { MemberPanel } from './MemberPanel'
+import { MemberSideModal } from './MemberSideModal'
+import { isPcAccess, isMobileAccess } from './lib/browser'
 import styled from 'styled-components'
 import { useState } from 'react'
 
 const Container = styled.div`
   height: 100%;
+`
+
+const Body = styled.div`
+  height: 95%;
+  display: flex;
+`
+
+const Content = styled.div`
+  height: 100%;
+  flex: 8;
+`
+
+const SideContent = styled.div`
+  height: 100%;
+  flex: 2;
+  border-left: 1px solid #E0E0E0;
 `
 
 function App() {
@@ -19,6 +38,7 @@ function App() {
     }
   });
   const [selectedRoom, setSelectedRoom] = useState(DEFAULT_ROOMS);
+  const [showSideModal, setShowSideModal] = useState(true);
   const [chats, setChat] = useState(rooms[selectedRoom].chats);
 
   const addMessage = (message) => {
@@ -32,6 +52,7 @@ function App() {
   }
 
   const roomNames = Object.keys(rooms)
+  const members = chats.map(chat => (chat.user))
 
   const addRoom = (roomName) => {
     setSelectedRoom(roomName)
@@ -53,11 +74,30 @@ function App() {
         <Header
           selectedRoom={selectedRoom}
         />
-        <Board
-          chats={chats}
-          addMessage={(message) => { addMessage(message) }}
-        />
+        <Body>
+          <Content>
+            <Board
+              chats={chats}
+              addMessage={(message) => { addMessage(message) }}
+            />
+          </Content>
+          {
+            isPcAccess && // PCからのアクセスの場合は、サイドコンテントを表示する
+            <SideContent>
+              <MemberPanel
+                members={members}
+              />
+            </SideContent>
+          }
+        </Body>
       </SelectedRoomContext.Provider>
+      {
+        isMobileAccess && showSideModal &&
+        <MemberSideModal
+          closeModal={() => setShowSideModal(false)}
+          members={members}
+        />
+      }
     </Container>
   );
 }
