@@ -35,60 +35,45 @@ function App() {
   const [showSideModal, setShowSideModal] = useState(true);
   const [chats, setChat] = useState([]);
   const [members, setMembers] = useState([]);
-  const [activeMembers, setActiveMembers] = useState([]);
 
-  const exitRoom = () => {
-    const members = activeMembers.filter(member => member != 'me')
-
-    db.collection('rooms').doc(selectedRoom.id).set({
-      actives: members,
-    }, { merge: true })
-  }
-
-  // 部屋の一覧
   useEffect(() => {
-    const unSub = db.collection('rooms').onSnapshot((snap) => {
+    // 部屋の一覧
+    const unRoomSub = db.collection('rooms').onSnapshot((snap) => {
       setRoom(snap.docs.map((doc) => ({ id: doc.id, name: doc.data().name })))
     })
-    return unSub
-  }, [selectedRoom])
+    return unRoomSub
+  }, [])
 
-  // 部屋の設定
   useEffect(() => {
-    const unSub = db.collection('rooms').doc(selectedRoom.id).onSnapshot((snap) => {
-      setMembers(snap.data().joins)
-      setActiveMembers(snap.data().actives)
-    })
-    return () => {
-      exitRoom()
-      unSub()
-    }
-  }, [selectedRoom])
-
-  // chatsの設定
-  useEffect(() => {
-    const unSub = db.collection('rooms').doc(selectedRoom.id).collection('messages').orderBy('createdAt').onSnapshot((snap) => {
+    // chatsの設定
+    const unChatSub = db.collection('rooms').doc(selectedRoom.id).collection('messages').orderBy('createdAt').onSnapshot((snap) => {
       const chats = snap.docs
         .map((doc) => ({ id: doc.id, message: doc.data().message, userName: doc.data().userName }))
       setChat(chats)
     })
-    return unSub
-  }, [selectedRoom])
-
-  // activeUserを見る
-  useEffect(() => {
-    const unSub = db.collection('rooms').onSnapshot((snap) => {
-      const currentRoom = snap.docs.find((doc) => doc.id === selectedRoom.id)
-      if (!currentRoom.data().actives || !currentRoom.data().actives.includes('me')) {
-        const activeMembers = [...currentRoom.data().actives, 'me']
-
-        setActiveMembers(activeMembers)
-        db.collection('rooms').doc(selectedRoom.id)
-          .set({ actives: activeMembers }, { merge: true })
+    // memberの設定
+    const unMemberSub = db.collection('rooms').doc(selectedRoom.id).onSnapshot((snap) => {
+      const snapMembers = snap.data().joins
+      let updateMembers = []
+      // 既にログインしたことがあったら
+      const index = snapMembers.findIndex((member) => member.userName === 'me')
+      if (index !== -1) {
+        // false -> true にする
+        updateMembers = [...snapMembers.slice(0, index), { userName: 'me', active: true }, ...snapMembers.slice(index + 1, snapMembers.length)]
+      } else {
+        // 見つからなかったら、新しくユーザーを追加する
+        updateMembers = [...snap.data().joins, { userName: 'me', active: true }];
       }
+      db.collection('rooms').doc(selectedRoom.id).set({
+        joins: updateMembers
+      }, { merge: true })
+      setMembers(updateMembers)
     })
-    return unSub()
-  }, [])
+    return () => {
+      unChatSub()
+      unMemberSub()
+    }
+  }, [selectedRoom])
 
   const addMessage = (message) => {
     db.collection('rooms').doc(selectedRoom.id).collection('messages').add({
@@ -96,18 +81,21 @@ function App() {
       message: message,
       createdAt: new Date().toISOString()
     })
-    if (!members.includes('me')) {
-      db.collection('rooms').doc(selectedRoom.id).set({
-        joins: [...members, 'me'],
-      }, { merge: true })
-    }
+  }
+
+  const switchRoom = (props) => {
+    const index = members.findIndex((member) => member.userName === 'me')
+    const updateMembers = [...members.slice(0, index), { userName: 'me', active: false }, ...members.slice(index + 1, members.length)]
+    db.collection('rooms').doc(selectedRoom.id).set({
+      joins: updateMembers
+    }, { merge: true })
+    setSelectedRoom(props)
   }
 
   const addRoom = (roomName) => {
     db.collection('rooms').add({
       name: roomName,
-      joins: ['me'],
-      actives: ['me'],
+      joins: [{ user: 'me', active: true }],
       messages: [],
       tags: []
     }).then((docRef) => {
@@ -117,7 +105,7 @@ function App() {
 
   return (
     <Container className="App">
-      <SelectedRoomContext.Provider value={[selectedRoom.id, rooms, {addRoom: addRoom, setSelectedRoom: setSelectedRoom}]}>
+      <SelectedRoomContext.Provider value={[selectedRoom.id, rooms, {addRoom: addRoom, switchRoom: switchRoom}]}>
         <Header
           selectedRoomName={selectedRoom.name}
         />

@@ -21,15 +21,14 @@ const Li = styled.li`
 
 export const MemberPanel = ({members}) => {
     return <Container>
-        members
         <Ul>
             {
                 members.map((member, index) =>
                     <Li
-                        me={ member ==='me' }
+                        me={ member.userName ==='me' }
                         key={ index }
                     >
-                        {member}
+                        {member.userName}
                     </Li>
                 )
             }
