@@ -63,7 +63,7 @@ const YouMessage = styled(Message)`
 export const Board = ({chats, addMessage}) => {
     const messageList = chats.map((chat, index) => {
         return (
-            (chat.user === 'me') ?
+            (chat.userName === 'me') ?
                 <MyMessage key={index}>{chat.message}</MyMessage> :
                 <YouMessage key={index}>{chat.message}</YouMessage>
 

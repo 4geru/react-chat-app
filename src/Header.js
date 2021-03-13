@@ -23,11 +23,11 @@ const Title = styled.div`
   } 
 `
 
-export const Header = ({selectedRoom}) => {
+export const Header = ({selectedRoomName}) => {
     return (
         <Container>
             <Title>
-              {selectedRoom}
+              {selectedRoomName}
             </Title>
         </Container>
     )

@@ -27,7 +27,7 @@ const Li = styled.li`
 `
 
 export const RoomModalForm = ({closeModal}) => {
-    const [selectedRoom, roomNames, { addRoom, switchRoom }] = useContext(SelectedRoomContext);
+    const [selectedRoomId, rooms, { addRoom, setSelectedRoom }] = useContext(SelectedRoomContext);
     const [roomText, setRoomText] = useState('')
     const submitRoomForm = (event) => {
         event.preventDefault()
@@ -39,14 +39,14 @@ export const RoomModalForm = ({closeModal}) => {
     return <Container onSubmit={submitRoomForm}>
         <Ul>
             {
-                roomNames.map((roomName, index) => {
+                rooms.map((room, index) => {
                     return (
                         <Li
-                            key={index}
-                            selected={roomName === selectedRoom}
-                            onClick={() => { switchRoom(roomName); closeModal() }}
+                            key={room.id}
+                            selected={room.id === selectedRoomId}
+                            onClick={() => { setSelectedRoom({id: room.id, name: room.name}); closeModal() }}
                         >
-                            {roomName}
+                            {room.name}
                         </Li>
 
                     )
