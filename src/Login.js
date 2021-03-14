@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Button, FormControl, TextField, Typography } from '@material-ui/core';
 import { auth } from './firebase';
+import firebase from 'firebase/app';
 
 const Container = styled.div`
     font-family: serif;
@@ -30,6 +31,18 @@ const Login = ({ history }) => {
 
         return unSub
     }, [history])
+
+    const twitterLogin = () => {
+        var provider = new firebase.auth.TwitterAuthProvider();
+        firebase.auth().languageCode = 'ja';
+        firebase.auth().signInWithPopup(provider)
+    }
+
+    const googleLogin = () => {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().languageCode = 'ja';
+        firebase.auth().signInWithPopup(provider)
+    }
 
     return (
         <Container>
@@ -66,7 +79,7 @@ const Login = ({ history }) => {
             <Button
                 variant="contained"
                 color="primary"
-                size="smaill"
+                size="small"
                 onClick={
                     isLogin
                         ? async () => {
@@ -89,11 +102,21 @@ const Login = ({ history }) => {
             >
                 { isLogin ? 'Login' : 'Register' }
             </Button>
-            <span
-                onClick={() => setIsLogin(!isLogin)}
-            >
-                {isLogin ? '新しいアカウントを作成' : 'ログイン'}
-            </span>
+            {
+                isLogin && <>
+                    <Button onClick={twitterLogin}>
+                        Login with Twitter
+                    </Button>
+                    <Button onClick={googleLogin}>
+                        Login with Google
+                    </Button>
+                </>
+            }
+            <Typography align="center">
+                <Span onClick={() => setIsLogin(!isLogin)} >
+                    {isLogin ? '新しいアカウントを作成' : 'ログイン'}
+                </Span>
+            </Typography>
         </Container>
     )
 }

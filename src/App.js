@@ -36,14 +36,22 @@ const App = ({history}) => {
   const [showSideModal, setShowSideModal] = useState(true);
   const [chats, setChat] = useState([]);
   const [members, setMembers] = useState([]);
+  const [user, setUser] = useState({ id: '', displayName: '' });
 
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user) => {
-      !user && history.push('login');
+      if(!user) {
+        history.push('login');
+        return;
+      }
+
+      const userInfo = { id: auth.currentUser.uid, displayName: auth.currentUser.displayName }
+      setUser(userInfo);
+      db.collection('users').doc(auth.currentUser.uid).set(userInfo, {merge: true})
     })
 
     return unSub
-  })
+  }, [])
 
   useEffect(() => {
     // 部屋の一覧
