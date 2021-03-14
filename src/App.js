@@ -7,7 +7,8 @@ import { MemberSideModal } from './MemberSideModal'
 import { isPcAccess, isMobileAccess } from './lib/browser'
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
-import { db } from './firebase'
+import { db, auth } from './firebase'
+import { Button } from '@material-ui/core';
 
 const Container = styled.div`
   height: 100%;
@@ -29,12 +30,20 @@ const SideContent = styled.div`
   border-left: 1px solid #E0E0E0;
 `
 
-function App() {
+const App = ({history}) => {
   const [rooms, setRoom] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState({ id: DEFAULT_ROOM_ID, name: 'general' });
   const [showSideModal, setShowSideModal] = useState(true);
   const [chats, setChat] = useState([]);
   const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && history.push('login');
+    })
+
+    return unSub
+  })
 
   useEffect(() => {
     // 部屋の一覧
@@ -103,6 +112,15 @@ function App() {
     })
   }
 
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      history.push('login');
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+
   return (
     <Container className="App">
       <SelectedRoomContext.Provider value={[selectedRoom.id, rooms, {addRoom: addRoom, switchRoom: switchRoom}]}>
@@ -122,6 +140,12 @@ function App() {
               <MemberPanel
                 members={members}
               />
+
+      <Button
+        onClick={logout}
+      >
+        ログアウト
+      </Button>
             </SideContent>
           }
         </Body>
